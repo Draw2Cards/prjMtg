@@ -1,7 +1,6 @@
 package factories;
 
 import enums.ObjectType;
-import objects.Object;
 import views.*;
 
 public class ObjectViewFactory {

@@ -1,12 +1,12 @@
 package interfaces;
 
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
-import objects.Object;
+import objects.MtgObject;
 
 public interface IView {
-    public GridPane view(Object obj);
+    public GridPane view(MtgObject obj);
     public GridPane create();
+    public void setValue(MtgObject mtgObject);
 
     String getName();
 

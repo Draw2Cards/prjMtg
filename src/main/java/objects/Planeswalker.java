@@ -7,11 +7,13 @@ import interfaces.IObject;
 import views.ObjectView;
 import views.PlaneswalkerView;
 
+import java.util.ArrayList;
+
 public class Planeswalker extends Permanent implements IObject {
     private int loyalty;
 
     // Please to not use this constructor.
-    // Index of object should not be setted up manually.
+    // Index of object should not be set up manually.
     // It was created only to meet project requirements.
     public Planeswalker(int id, String name, String imgPath, Type type, Owner owner, Zone zone, boolean untapped, int loyalty) {
         super(id, name, imgPath, type, owner, zone, untapped);
@@ -19,7 +21,7 @@ public class Planeswalker extends Permanent implements IObject {
     }
 
     public Planeswalker(String name, int loyalty, boolean untapped, Owner owner, Zone zone, String imgPath) {
-        super(name, untapped, owner, zone, imgPath);
+        super(name, untapped, owner, zone, imgPath, Type.planeswalker);
         this.loyalty = loyalty;
     }
 
@@ -28,10 +30,18 @@ public class Planeswalker extends Permanent implements IObject {
     }
 
     @Override
-    public void getValuesFromView(ObjectView objectView) {
-        super.getValuesFromView(objectView);
+    public void setValuesFromView(ObjectView objectView) {
+        super.setValuesFromView(objectView);
         PlaneswalkerView pwView = (PlaneswalkerView) objectView;
         loyalty = pwView.getLoyalty();
+    }
+
+    @Override
+    public void setValuesFromArray(ArrayList<String> array) {
+        array.add(3, "planeswalker");
+        super.setValuesFromArray(array);
+        loyalty = Integer.parseInt(array.get(6));
+        untapped = Boolean.parseBoolean(array.get(7));
     }
 
     @Override

@@ -6,7 +6,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.GridPane;
 import objects.Creature;
-import objects.Object;
+import objects.MtgObject;
 
 public class CreatureView extends PermanentView implements IView {
 
@@ -14,7 +14,7 @@ public class CreatureView extends PermanentView implements IView {
     private Spinner<Integer>toughSpinner;
 
     @Override
-    public GridPane view(Object obj) {
+    public GridPane view(MtgObject obj) {
         GridPane gridPane = getGrid();
         GridPane rightPane = rightPane(gridPane);
         setValue(obj);
@@ -47,7 +47,7 @@ public class CreatureView extends PermanentView implements IView {
     }
 
     @Override
-    protected void setValue(Object obj){
+    public void setValue(MtgObject obj){
         super.setValue(obj);
         Creature cre = (Creature) obj;
         powerSpinner.getValueFactory().setValue(cre.getPower());

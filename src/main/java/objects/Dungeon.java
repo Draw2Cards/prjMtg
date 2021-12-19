@@ -7,12 +7,14 @@ import interfaces.IObject;
 import views.DungeonView;
 import views.ObjectView;
 
+import java.util.ArrayList;
+
 public class Dungeon extends Card implements IObject {
     private int curPos;
     private int maxPos;
 
     // Please to not use this constructor.
-    // Index of object should not be setted up manually.
+    // Index of object should not be set up manually.
     // It was created only to meet project requirements.
     public Dungeon(int id, String name, String imgPath, Type type, Owner owner, Zone zone, int curPos, int maxPos) {
         super(id, name, imgPath, type, owner, zone);
@@ -27,11 +29,17 @@ public class Dungeon extends Card implements IObject {
     }
 
     @Override
-    public void getValuesFromView(ObjectView objectView) {
-        super.getValuesFromView(objectView);
+    public void setValuesFromView(ObjectView objectView) {
+        super.setValuesFromView(objectView);
         DungeonView dungeonView = (DungeonView) objectView;
         curPos = dungeonView.getCurPos();
         maxPos = dungeonView.getMaxPos();
+    }
+
+    @Override
+    public void setValuesFromArray(ArrayList<String> array) {
+        super.setValuesFromArray(array);
+
     }
 
     public Integer getCurPos() {

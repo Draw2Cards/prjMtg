@@ -3,18 +3,20 @@ package objects;
 import interfaces.IObject;
 import views.ObjectView;
 
-public class Object implements IObject {
+import java.util.ArrayList;
+
+public class MtgObject implements IObject {
 
     // Please to not use this constructor.
-    // Index of object should not be setted up manually.
+    // Index of object should not be set up manually.
     // It was created only to meet project requirements.
-    public Object(int id, String name, String imgPath) {
+    public MtgObject(int id, String name, String imgPath) {
         this.id = id;
         this.name = name;
         this.imgPath = imgPath;
     }
 
-    public Object(String name, String imgPath) {
+    public MtgObject(String name, String imgPath) {
         this.name = name;
         this.imgPath = imgPath;
         this.id = nextId++;
@@ -40,9 +42,15 @@ public class Object implements IObject {
     }
 
     @Override
-    public void getValuesFromView(ObjectView objectView) {
-        id = nextId++;
+    public void setValuesFromView(ObjectView objectView) {
+        id = objectView.getId();
         name = objectView.getName();
         imgPath = objectView.getImgPath();
+    }
+
+    @Override
+    public void setValuesFromArray(ArrayList<String> array) {
+        name = array.get(1);
+        imgPath = array.get(2);
     }
 }

@@ -11,7 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import objects.Object;
+import objects.MtgObject;
 import views.ObjectView;
 
 import java.net.URL;
@@ -20,14 +20,14 @@ import java.util.ResourceBundle;
 public class AddController implements Initializable {
 
     @FXML
-    private ComboBox<ObjectType> comboBox;
+    protected ComboBox<ObjectType> comboBox;
 
     @FXML
-    private GridPane gridPane;
+    protected GridPane gridPane;
 
-    private Object newObject;
-    private ObjectView objectView;
-    private Node node;
+    protected MtgObject newMtgObject;
+    protected ObjectView objectView;
+    protected Node node;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -43,18 +43,18 @@ public class AddController implements Initializable {
         setGrid(comboBox.getSelectionModel().getSelectedItem());
         }
 
-   private void setGrid(ObjectType objectType){
+   protected void setGrid(ObjectType objectType){
        ObjectViewFactory objectViewFactory = new ObjectViewFactory();
        ObjectFactory objectFactory = new ObjectFactory();
        objectView = objectViewFactory.createView(objectType);
-       newObject = objectFactory.createObject(objectType);
+       newMtgObject = objectFactory.createObject(objectType);
        node = objectView.create();
        gridPane.add(node, 0,0);
    }
 
     public void onAdd(ActionEvent actionEvent) {
-        if (newObject != null){
-            newObject.getValuesFromView(objectView);
+        if (newMtgObject != null){
+            newMtgObject.setValuesFromView(objectView);
             Node source = (Node) actionEvent.getSource();
             Stage stage = (Stage) source.getScene().getWindow();
             stage.close();
@@ -68,11 +68,11 @@ public class AddController implements Initializable {
     }
 
     public void onCancel(ActionEvent actionEvent) {
-        newObject = null;
+        newMtgObject = null;
         Node source = (Node) actionEvent.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
         stage.close();
     }
 
-    public Object getObject(){ return newObject; }
+    public MtgObject getObject(){ return newMtgObject; }
 }

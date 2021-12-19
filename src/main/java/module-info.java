@@ -5,4 +5,6 @@ module com.main.prjmtg {
 
     opens com.main.prjmtg to javafx.fxml;
     exports com.main.prjmtg;
+    exports readers;
+    opens readers to javafx.fxml;
 }

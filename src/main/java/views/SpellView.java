@@ -5,14 +5,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.GridPane;
-import objects.Object;
+import objects.MtgObject;
 import objects.Spell;
 
 public class SpellView extends CardView implements IView {
     private Spinner posSpinner;
 
     @Override
-    public GridPane view(Object obj) {
+    public GridPane view(MtgObject obj) {
         GridPane gridPane = getGrid();
         GridPane rightPane = rightPane(gridPane);
         setValue(obj);
@@ -33,7 +33,7 @@ public class SpellView extends CardView implements IView {
     }
 
     @Override
-    protected void setValue(Object obj){
+    public void setValue(MtgObject obj){
         super.setValue(obj);
         Spell spell = (Spell) obj;
 

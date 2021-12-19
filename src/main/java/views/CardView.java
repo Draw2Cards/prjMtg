@@ -8,7 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import objects.Card;
-import objects.Object;
+import objects.MtgObject;
 
 public class CardView extends ObjectView implements IView {
 
@@ -19,7 +19,7 @@ public class CardView extends ObjectView implements IView {
     protected ComboBox getTypeCombo(){return typeCombo;}
 
     @Override
-    public GridPane view(Object obj) {
+    public GridPane view(MtgObject obj) {
         GridPane gridPane = getGrid();
         GridPane rightPane = rightPane(gridPane);
         setValue(obj);
@@ -55,7 +55,7 @@ public class CardView extends ObjectView implements IView {
     }
 
     @Override
-    protected void setValue(Object obj){
+    public void setValue(MtgObject obj){
         super.setValue(obj);
         Card card = (Card) obj;
         typeCombo.getSelectionModel().select(card.getType());

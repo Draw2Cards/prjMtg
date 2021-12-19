@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import objects.Object;
+import objects.MtgObject;
 
 import java.io.File;
 
@@ -54,7 +54,7 @@ public class ObjectView implements IView {
         rightPane.add( smallPane, 0,0 );
 
         imageView = new ImageView();
-        imageView.setFitHeight(100.0);
+        imageView.setFitHeight(200.0);
         imageView.setPreserveRatio(true);
 
         rightPane.add(imageView, 0, 1);
@@ -63,7 +63,7 @@ public class ObjectView implements IView {
     }
 
     @Override
-    public GridPane view(Object obj){
+    public GridPane view(MtgObject obj){
         GridPane gridPane = getGrid();
         GridPane rightPane = rightPane(gridPane);
         setValue(obj);
@@ -119,16 +119,20 @@ public class ObjectView implements IView {
         return text;
     }
 
-    protected void setValue(Object object) {
-        nameTextF.setText(object.getName());
-        File imgFile = new File(object.getImgPath());
+    public void setValue(MtgObject mtgObject) {
+        nameTextF.setText(mtgObject.getName());
+        File imgFile = new File(mtgObject.getImgPath());
         String imgPath = imgFile.toString();
         Image imgImage = new Image(imgPath);
         imageView.setImage(imgImage);
-        index.getValueFactory().setValue(object.getId());
+        index.getValueFactory().setValue(mtgObject.getId());
     }
     protected void setEditable(boolean b) {
         index.setEditable(false);
         nameTextF.setEditable(b);
+    }
+
+    public int getId() {
+        return index.getValue();
     }
 }

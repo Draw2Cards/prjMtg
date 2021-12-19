@@ -4,7 +4,7 @@ import interfaces.IView;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import objects.Object;
+import objects.MtgObject;
 import objects.Permanent;
 
 public abstract class PermanentView extends CardView implements IView {
@@ -12,7 +12,7 @@ public abstract class PermanentView extends CardView implements IView {
     private CheckBox checkBox;
 
     @Override
-    public GridPane view(Object obj) {
+    public GridPane view(MtgObject obj) {
         GridPane gridPane = getGrid();
         GridPane rightPane = rightPane(gridPane);
         setValue(obj);
@@ -33,7 +33,7 @@ public abstract class PermanentView extends CardView implements IView {
     }
 
     @Override
-    protected void setValue(Object obj){
+    public void setValue(MtgObject obj){
         super.setValue(obj);
         Permanent permanent = (Permanent) obj;
         checkBox.setSelected(permanent.isUntapped());

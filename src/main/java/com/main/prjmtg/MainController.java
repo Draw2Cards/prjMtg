@@ -2,8 +2,6 @@ package com.main.prjmtg;
 
 import enums.*;
 import factories.ObjectViewFactory;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -11,31 +9,28 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import objects.*;
-import objects.Object;
+import objects.MtgObject;
+import readers.CsvReader;
+import readers.Reader;
 import views.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -43,23 +38,60 @@ public class MainController implements Initializable {
     private GridPane gridPanel;
 
     @FXML
-    private ListView<Object> listView;
+    private ListView<MtgObject> listView;
 
     @FXML
     private TextField searchField;
 
-    private ObservableList<Object> objectsList = FXCollections.observableArrayList();
+    private ObservableList<MtgObject> objectsList = FXCollections.observableArrayList();
 
     private static Node infoNode;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        populate(); // for presentation purposes only!
+        try {
+            loadState(new CsvReader());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         listView.setItems(objectsList);
 
-        FilteredList<Object> filteredList = new FilteredList<>(objectsList, b -> true);
+        listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent click) {
+
+                if (click.getClickCount() == 2) {
+                    MtgObject currentItemSelected = listView.getSelectionModel().getSelectedItem();
+                    System.out.println(listView.getSelectionModel().getSelectedIndex() +": " + currentItemSelected.getName());
+
+                    FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("add-view.fxml"));
+                    EditController editController = new EditController();
+                    fxmlLoader.setController(editController);
+
+                    Scene scene = null;
+                    try {
+                        scene = new Scene(fxmlLoader.load());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+
+                    editController.setObject(currentItemSelected);
+                    stage.showAndWait();
+                    MtgObject editedMtgObject = editController.getObject();
+                    if (editedMtgObject != null) {
+                        objectsList.set(listView.getSelectionModel().getSelectedIndex(), editedMtgObject);
+                    }
+
+                }
+            }
+        });
+
+        FilteredList<MtgObject> filteredList = new FilteredList<>(objectsList, b -> true);
 
         searchField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
             filteredList.setPredicate(object -> {
@@ -77,12 +109,12 @@ public class MainController implements Initializable {
             });
         }));
 
-        SortedList<Object> sortedList = new SortedList<>(filteredList);
+        SortedList<MtgObject> sortedList = new SortedList<>(filteredList);
         listView.setItems(sortedList);
 
-        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>() {
+        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<MtgObject>() {
             @Override
-            public void changed(ObservableValue<? extends Object> observableValue, Object object, Object t1) {
+            public void changed(ObservableValue<? extends MtgObject> observableValue, MtgObject mtgObject, MtgObject t1) {
                 if (t1 != null) {
                     if (infoNode != null) {
                         gridPanel.getChildren().remove(infoNode);
@@ -95,6 +127,14 @@ public class MainController implements Initializable {
                 }
             }
         });
+    }
+
+    private void loadState(Reader reader) throws IOException {
+        ArrayList<MtgObject> arrayList = new ArrayList<>();
+        arrayList = reader.getArrayList();
+
+        objectsList.setAll(arrayList);
+
     }
 
     public void onDelete(ActionEvent actionEvent) throws IOException {
@@ -117,7 +157,7 @@ public class MainController implements Initializable {
 
     private boolean deleteItem(int id) {
         boolean result = false;
-        for (Object obj : objectsList) {
+        for (MtgObject obj : objectsList) {
             if (obj.getId() == id) {
                 objectsList.remove(obj);
                 result = true;
@@ -129,14 +169,15 @@ public class MainController implements Initializable {
 
     public void onAdd(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("add-view.fxml"));
+        AddController addController = new AddController();
+        fxmlLoader.setController(addController);
         Scene scene = new Scene(fxmlLoader.load());
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.showAndWait();
-        AddController addController = fxmlLoader.getController();
-        Object newObject = addController.getObject();
-        if (newObject != null) {
-            objectsList.add(newObject);
+        MtgObject newMtgObject = addController.getObject();
+        if (newMtgObject != null) {
+            objectsList.add(newMtgObject);
         }
     }
 
@@ -149,16 +190,5 @@ public class MainController implements Initializable {
         {
             listView.setItems(null);
         }
-    }
-
-    /* ------ */
-
-    private void populate() {
-        objectsList.add(new Object("Kiora, Master of the Depths Emblem", "file:\\D:\\img\\tbfz-14-kiora-master-of-the-depths-emblem.jpg"));
-        objectsList.add(new Card("Temple of the False God", Type.land, Owner.player, Zone.library, "file:\\D:\\img\\voc-187-temple-of-the-false-god.jpg"));
-        objectsList.add(new Creature("Kiora's Follower", 2, 2, false,Owner.player, Zone.library, "file:\\D:\\img\\ddo-52-kiora-s-follower.jpg" ));
-        objectsList.add(new Planeswalker("Kiora, Master of the Depths", 4, true, Owner.player, Zone.library, "file:\\D:\\img\\bfz-213-kiora-master-of-the-depths.jpg" ));
-        objectsList.add(new Spell("Scapeshift", Type.sorcery, Owner.player, "file:\\D:\\img\\m19-201-scapeshift.jpg" ));
-        objectsList.add(new Spell("Growth Spiral", Type.instant, Owner.player, "file:\\D:\\img\\cmr-446-growth-spiral.jpg" ));
     }
 }
