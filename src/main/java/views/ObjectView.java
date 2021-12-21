@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import objects.MtgObject;
+import objects.Obj;
 
 import java.io.File;
 
@@ -63,7 +63,7 @@ public class ObjectView implements IView {
     }
 
     @Override
-    public GridPane view(MtgObject obj){
+    public GridPane view(Obj obj){
         GridPane gridPane = getGrid();
         GridPane rightPane = rightPane(gridPane);
         setValue(obj);
@@ -119,13 +119,13 @@ public class ObjectView implements IView {
         return text;
     }
 
-    public void setValue(MtgObject mtgObject) {
-        nameTextF.setText(mtgObject.getName());
-        File imgFile = new File(mtgObject.getImgPath());
+    public void setValue(Obj obj) {
+        nameTextF.setText(obj.getName());
+        File imgFile = new File(obj.getImgPath());
         String imgPath = imgFile.toString();
         Image imgImage = new Image(imgPath);
         imageView.setImage(imgImage);
-        index.getValueFactory().setValue(mtgObject.getId());
+        index.getValueFactory().setValue(obj.getId());
     }
     protected void setEditable(boolean b) {
         index.setEditable(false);

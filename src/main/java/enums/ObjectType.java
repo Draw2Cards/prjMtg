@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 public enum ObjectType {
-    object("object", "class objects.Object"),
+    object("object", "class objects.Obj"),
     card("card", "class objects.Card"),
     creature("creature", "class objects.Creature"),
     planeswalker("planeswalker", "class objects.Planeswalker"),

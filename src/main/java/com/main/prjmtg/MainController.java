@@ -16,14 +16,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import objects.*;
-import objects.MtgObject;
+import objects.Obj;
 import readers.CsvReader;
 import readers.Reader;
 import views.*;
@@ -38,12 +37,15 @@ public class MainController implements Initializable {
     private GridPane gridPanel;
 
     @FXML
-    private ListView<MtgObject> listView;
+    private ListView<Obj> listView;
 
     @FXML
     private TextField searchField;
 
-    private ObservableList<MtgObject> objectsList = FXCollections.observableArrayList();
+    @FXML
+    private ComboBox typesComboBox;
+
+    private ObservableList<Obj> fullObjectsList = FXCollections.observableArrayList();
 
     private static Node infoNode;
 
@@ -56,7 +58,12 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
 
-        listView.setItems(objectsList);
+
+        typesComboBox.getItems().setAll(ObjectType.values());
+        typesComboBox.getItems().add("all");
+        typesComboBox.getSelectionModel().select("all");
+
+        listView.setItems(fullObjectsList);
 
         listView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -64,7 +71,7 @@ public class MainController implements Initializable {
             public void handle(MouseEvent click) {
 
                 if (click.getClickCount() == 2) {
-                    MtgObject currentItemSelected = listView.getSelectionModel().getSelectedItem();
+                    Obj currentItemSelected = listView.getSelectionModel().getSelectedItem();
                     System.out.println(listView.getSelectionModel().getSelectedIndex() +": " + currentItemSelected.getName());
 
                     FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("add-view.fxml"));
@@ -82,19 +89,20 @@ public class MainController implements Initializable {
 
                     editController.setObject(currentItemSelected);
                     stage.showAndWait();
-                    MtgObject editedMtgObject = editController.getObject();
-                    if (editedMtgObject != null) {
-                        objectsList.set(listView.getSelectionModel().getSelectedIndex(), editedMtgObject);
+                    Obj editedObj = editController.getObject();
+                    if (editedObj != null) {
+                        fullObjectsList.set(listView.getSelectionModel().getSelectedIndex(), editedObj);
                     }
 
                 }
             }
         });
 
-        FilteredList<MtgObject> filteredList = new FilteredList<>(objectsList, b -> true);
+        FilteredList<Obj> filteredByNameList = new FilteredList<>(fullObjectsList, b -> true);
+        FilteredList<Obj> filteredByType = new FilteredList<>(filteredByNameList, b-> true);
 
         searchField.textProperty().addListener(((observableValue, oldValue, newValue) -> {
-            filteredList.setPredicate(object -> {
+            filteredByNameList.setPredicate(object -> {
                 if (newValue == null || newValue.isEmpty()){
                     return true;
                 }
@@ -109,12 +117,32 @@ public class MainController implements Initializable {
             });
         }));
 
-        SortedList<MtgObject> sortedList = new SortedList<>(filteredList);
+        typesComboBox.getSelectionModel().selectedItemProperty().addListener((((observableValue, oldValue, newValue) -> {
+            filteredByType.setPredicate(object -> {
+                if (newValue == null || newValue == "all"){
+                    return true;
+                }
+                else {
+                    ObjectType objType = (ObjectType) newValue;
+                    System.out.println(object.getClass().toString() + " " + objType.getClassName());
+                    if ( object.getClass().toString().compareTo(objType.getClassName()) == 0 ) {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+            });
+        })));
+
+        SortedList<Obj> sortedList = new SortedList<>(filteredByType);
         listView.setItems(sortedList);
 
-        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<MtgObject>() {
+        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Obj>() {
             @Override
-            public void changed(ObservableValue<? extends MtgObject> observableValue, MtgObject mtgObject, MtgObject t1) {
+            public void changed(ObservableValue<? extends Obj> observableValue, Obj obj, Obj t1) {
                 if (t1 != null) {
                     if (infoNode != null) {
                         gridPanel.getChildren().remove(infoNode);
@@ -130,10 +158,10 @@ public class MainController implements Initializable {
     }
 
     private void loadState(Reader reader) throws IOException {
-        ArrayList<MtgObject> arrayList = new ArrayList<>();
+        ArrayList<Obj> arrayList = new ArrayList<>();
         arrayList = reader.getArrayList();
 
-        objectsList.setAll(arrayList);
+        fullObjectsList.setAll(arrayList);
 
     }
 
@@ -157,9 +185,9 @@ public class MainController implements Initializable {
 
     private boolean deleteItem(int id) {
         boolean result = false;
-        for (MtgObject obj : objectsList) {
+        for (Obj obj : fullObjectsList) {
             if (obj.getId() == id) {
-                objectsList.remove(obj);
+                fullObjectsList.remove(obj);
                 result = true;
                 break;
             }
@@ -175,16 +203,16 @@ public class MainController implements Initializable {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.showAndWait();
-        MtgObject newMtgObject = addController.getObject();
-        if (newMtgObject != null) {
-            objectsList.add(newMtgObject);
+        Obj newObj = addController.getObject();
+        if (newObj != null) {
+            fullObjectsList.add(newObj);
         }
     }
 
     public void onSearch(ActionEvent actionEvent) {
         String text = searchField.getText();
         if (text.compareTo("*") == 0){
-            listView.setItems(objectsList);
+            listView.setItems(fullObjectsList);
         }
         else
         {

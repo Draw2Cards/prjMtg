@@ -9,7 +9,7 @@ import views.ObjectView;
 
 import java.util.ArrayList;
 
-public class Card extends MtgObject implements IObject {
+public class Card extends Obj implements IObject {
     private Type type;
     private Owner owner;
     private Zone zone;

@@ -11,7 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import objects.MtgObject;
+import objects.Obj;
 import views.ObjectView;
 
 import java.net.URL;
@@ -25,7 +25,7 @@ public class AddController implements Initializable {
     @FXML
     protected GridPane gridPane;
 
-    protected MtgObject newMtgObject;
+    protected Obj newObj;
     protected ObjectView objectView;
     protected Node node;
 
@@ -47,14 +47,14 @@ public class AddController implements Initializable {
        ObjectViewFactory objectViewFactory = new ObjectViewFactory();
        ObjectFactory objectFactory = new ObjectFactory();
        objectView = objectViewFactory.createView(objectType);
-       newMtgObject = objectFactory.createObject(objectType);
+       newObj = objectFactory.createObject(objectType);
        node = objectView.create();
        gridPane.add(node, 0,0);
    }
 
     public void onAdd(ActionEvent actionEvent) {
-        if (newMtgObject != null){
-            newMtgObject.setValuesFromView(objectView);
+        if (newObj != null){
+            newObj.setValuesFromView(objectView);
             Node source = (Node) actionEvent.getSource();
             Stage stage = (Stage) source.getScene().getWindow();
             stage.close();
@@ -68,11 +68,11 @@ public class AddController implements Initializable {
     }
 
     public void onCancel(ActionEvent actionEvent) {
-        newMtgObject = null;
+        newObj = null;
         Node source = (Node) actionEvent.getSource();
         Stage stage = (Stage) source.getScene().getWindow();
         stage.close();
     }
 
-    public MtgObject getObject(){ return newMtgObject; }
+    public Obj getObject(){ return newObj; }
 }

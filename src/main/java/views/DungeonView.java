@@ -4,14 +4,14 @@ import interfaces.IView;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import objects.Dungeon;
-import objects.MtgObject;
+import objects.Obj;
 
 public class DungeonView extends CardView implements IView {
     private Spinner<Integer> curSpinner;
     private Spinner<Integer> maxSpinner;
 
     @Override
-    public GridPane view(MtgObject obj) {
+    public GridPane view(Obj obj) {
         GridPane gridPane = getGrid();
         GridPane rightPane = rightPane(gridPane);
         setValue(obj);
@@ -44,7 +44,7 @@ public class DungeonView extends CardView implements IView {
     }
 
     @Override
-    public void setValue(MtgObject obj){
+    public void setValue(Obj obj){
         super.setValue(obj);
         Dungeon dungeon = (Dungeon) obj;
         curSpinner.getValueFactory().setValue(dungeon.getCurPos());

@@ -7,11 +7,10 @@ import objects.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CsvReader extends Reader implements IReader {
-    public ArrayList<MtgObject> getArrayList() throws IOException {
-        ArrayList<MtgObject> arrayList = new ArrayList<>();
+    public ArrayList<Obj> getArrayList() {
+        ArrayList<Obj> arrayList = new ArrayList<>();
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader("D:\\state001.csv"));
@@ -27,10 +26,10 @@ public class CsvReader extends Reader implements IReader {
 
                 ObjectFactory objectFactory = new ObjectFactory();
                 ObjectType objectType = ObjectType.valueOf(arrayList1.get(0));
-                MtgObject mtgObject = objectFactory.createObject(objectType);
-                mtgObject.setValuesFromArray(arrayList1);
+                Obj obj = objectFactory.createObject(objectType);
+                obj.setValuesFromArray(arrayList1);
 
-                arrayList.add(mtgObject);
+                arrayList.add(obj);
 
                 System.out.println(line);
                 line = reader.readLine();

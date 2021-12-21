@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -44,6 +45,7 @@
                     <buttons>
                         <Label text="Filter:" />
                         <TextField fx:id="searchField" />
+                        <ComboBox fx:id="typesComboBox" prefWidth="150.0" />
                     </buttons>
                   </ButtonBar>
                </top>
