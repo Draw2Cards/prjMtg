@@ -34,6 +34,8 @@ public class Obj implements IObject {
     private String name;
     private String imgPath;
 
+
+    public static int getNextId() { return nextId; }
     public int getId(){return id;}
 
     public String getName() {

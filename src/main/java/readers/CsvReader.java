@@ -9,11 +9,14 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class CsvReader extends Reader implements IReader {
+
+    public static String dataPath = "D:\\state001.csv";
+
     public ArrayList<Obj> getArrayList() {
         ArrayList<Obj> arrayList = new ArrayList<>();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("D:\\state001.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader(dataPath));
             String line = reader.readLine();
             while (line != null) {
 
